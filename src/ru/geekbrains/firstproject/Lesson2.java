@@ -79,6 +79,41 @@ public class Lesson2 {
         System.out.println (n);
         offset(array7Clone, n); // смещаем
         System.out.println (Arrays.toString( array7Clone));
+
+        // 7'- смещение
+        System.out.println ("Задача 7' Смещаем по кольцу:");
+        int [] array77 ={3,5,6,7,4,8,9,3,5,2};
+        System.out.println (Arrays.toString( array77 ));
+        shiftArray (array77, -2);
+        System.out.println (Arrays.toString( array77 ));
+
+        // 8- вывод матрицы
+        System.out.println ("Задача 8 - вывод матрицы:");
+        int[][] w = new int[10][10];
+        printArr (w);
+
+        // Форматирование строк
+        System.out.println ("Java\nWorld\tJava");
+        String str = String.format("Position: %s, Name: %s, Phone: %s.", "Engineer", "Alex", "897687");
+        System.out.println (str);
+
+    }
+
+    public static void printArr(int[][] arr) {
+        for (int i = 0; i <= arr.length; i++) {
+            System.out.printf("%2d ", i);
+
+        }
+            System.out.println();
+        for (int i = 0; i < arr.length; i++) {
+            System.out.printf("%2d ", (i + 1));
+
+            for (int j = 0; j < arr[i].length; j++) {
+                System.out.printf("%2d ", arr[i][j]);
+
+            }
+            System.out.println();
+        }
     }
 
     public static void offset(int[] arr, int a) { // метод "сдвиг массива" на (-+)a влево или вправо
@@ -94,6 +129,20 @@ public class Lesson2 {
             }
         }
     }
+
+    public static void shiftArray (int[] arr, int n) { // метод "сдвиг массива" вращением по кольцу
+        n = n % arr.length;
+        if (n < 0) n = arr.length + n;
+        for (int w = 0; w < n; w++) {
+            int temp = arr[0];
+            for (int i = 0; i < arr.length - 1; i++) {
+                arr[i] = arr[i + 1];
+            }
+            arr [arr.length - 1] = temp;
+        }
+    }
+
+
 
     public static boolean checkBalance (int [] arr) {
         if (arr.length < 2) return false;
