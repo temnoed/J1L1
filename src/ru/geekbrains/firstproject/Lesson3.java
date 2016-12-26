@@ -1,35 +1,49 @@
 package ru.geekbrains.firstproject;
 
-//Задание 1
-//        Написать небольшую программу-игру.
-//        Компьютер загадывает число(от 0 до 9), пользователь должен его угадать. На отгадывание дается три попытки.
-//        Если игра закончилась(угадали число, или закончились попытки), компьютер должен спросить - хочет ли игрок сыграть
-//        еще один раунд. Можно подсчитывать количество угаданных чисел.
-//        Для формирования случайного числа от 0 до 9 можно воспользоваться:
-//        int x = (int)(Math.random() * 10);
-//        Задание со звездочкой
-//        Создать массив из слов:
-//        apple, orange, lemon, banana, apricot, avocado, broccoli, carrot,
-//        cherry, garlic, grape, melon, leak, kiwi, mango, mushroom, nut,
-//        olive, pea, peanut, pear, pepper, pineapple, pumpkin, potato
-//        При запуске программы компьютер загадывает слово.
-//        Запрашиваем у пользователя слово и сравниваем его с загаданным.
-//        После ввода пользователем слова, мы должны сказать угадал он слово, или нет.
-//        Если слово не угадано, необходимо показать буквы которые стоят на своих местах.
-//        apple - загаданное
-//        apricot - ответ игрока
-//        ap################## (20 символов, чтобы пользователь не мог узнать длину слова)
-//        Для сравнения двух слов посимвольно, можно пользоваться:
-//        String str = "Apple";
-//        str.charAt(0); - метод, вернет char - символ, который стоит в слове str на первой позиции
-//        Играем до тех пор, пока игрок не отгадает слово
-//        Используем только маленькие буквы
-//        Делаете только одно
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class Lesson3 {
 
-    public static void main  (String[] args) {
+	// Решил задачу 2.
+	// Использовал замену символа в строке #################### по его индексу. Для этого нашёл "самодельный" метод replaceCharAt.
 
-    }
+	public static void main(String[] args) {
 
+		// Задаём массив слов и показываем его
+		String fruits = "apple orange lemon banana apricot avocado broccoli carrot cherry garlic grape melon leak kiwi mango mushroom nut olive pea peanut pear pepper pineapple pumpkin potato";
+		String[] arrayFruits = fruits.split(" "); // превращаем строку в массив слов
+		System.out.println(Arrays.toString(arrayFruits));
+
+		// загадываем слово
+		int randomKey = (int) (Math.random() * arrayFruits.length);
+		String randomWord = arrayFruits[randomKey];
+		System.out.println("\n Угадайте, какое слово из списка загадал компьютер? \n Ввведите слово: ");
+
+
+		while (true) {
+			// вводим слово и сравниваем с загаданным. Сообщаем.
+			Scanner sc = new Scanner(System.in);
+			String str = sc.next();
+			if (randomWord.equals(str)) { // если угадали окей
+				System.out.println("Вы угадали. Прекрасно!");
+				break;
+			} else {  // если не угадали, прокручиваем перебор по менее длинному слову
+				String chequer = "####################";
+				int shortLength;
+				shortLength = (randomWord.length() <= str.length()) ? randomWord.length() : str.length();
+
+				for (byte i = 0; i < shortLength; i++) {
+					if (randomWord.charAt(i) == str.charAt(i)) {
+						chequer = replaceCharAt(chequer, i, randomWord.charAt(i)); // заменяем решётку угаданным символом
+					}
+				}
+				System.out.println(chequer);
+			}
+		}
+	}
+
+	public static String replaceCharAt(String s, int pos, char c) {  // заменяет один символ в строке на заданный по его индексу
+		return s.substring(0, pos) + c + s.substring(pos + 1);
+	}
 }
