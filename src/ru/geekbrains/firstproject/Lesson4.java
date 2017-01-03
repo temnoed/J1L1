@@ -1,3 +1,5 @@
+// Для поиска осмысленного хода компьютера используем метод seek_Fpoint(), который устанавливает координаты xAI, yAI для хода ИИ и возвращает true, если таковые нашлись.
+
 package ru.geekbrains.firstproject;
 
 import java.util.Random;
@@ -67,13 +69,64 @@ public class Lesson4 {
 			}
 		}
 
+		// проверяются вертикальные палки
+		for (int i = 0; i <= (SIZE - DOTS_TO_WIN); i++) {
+			for (int j = 0; j < SIZE; j++) {
+				sumDots = 0;
+				for (int k = 0; k < DOTS_TO_WIN; k++) { // сканируем в два прохода на длину палки в поисках незанятой выигрышной точки
+					if (map[i + k][j] == symb) sumDots++;
+				}
+				if (sumDots == DOTS_TO_WIN - 1) {
+					for (int k = 0; k < DOTS_TO_WIN; k++) { // второй проход
+						if ((map[i + k][j] == DOT_EMPTY) && isCellValid(j, i + k)) {
+							xAI = j + 1;
+							yAI = i + k + 1;
+							if (xAI >= 0 & yAI >= 0) return true;
+						}
+					}
+				}
+			}
+		}
 
+		// проверяются диагональные палки
+		for (int i = 0; i <= (SIZE - DOTS_TO_WIN); i++) {
+			for (int j = 0; j <= (SIZE - DOTS_TO_WIN); j++) {
+				sumDots = 0;
+				for (int k = 0; k < DOTS_TO_WIN; k++) { // первый проход по диагональной /
+					if (map[i + k][j + k] == symb) sumDots++;
+				}
+				if (sumDots == DOTS_TO_WIN - 1) {
+					for (int k = 0; k < DOTS_TO_WIN; k++) { // второй проход
+						if ((map[i + k][j + k] == DOT_EMPTY) && isCellValid(j +k, i + k)) {
+							xAI = j + k + 1;
+							yAI = i + k + 1;
+							if (xAI >= 0 & yAI >= 0) return true;
+						}
+					}
+				}
+
+				sumDots = 0;
+				for (int k = 0; k < DOTS_TO_WIN; k++) {  // первый проход по диагональной \
+					if (map[i + DOTS_TO_WIN - k - 1 ][j + k] == symb) sumDots++;
+				}
+				if (sumDots == DOTS_TO_WIN - 1) {
+					for (int k = 0; k < DOTS_TO_WIN; k++) { // второй проход
+						if ((map[i + DOTS_TO_WIN - k - 1 ][j + k] == DOT_EMPTY) && isCellValid(j + k, i + DOTS_TO_WIN - k - 1 )) {
+							xAI = j + k + 1;
+							yAI = i + DOTS_TO_WIN - k;
+							if (xAI >= 0 & yAI >= 0) return true;
+						}
+					}
+				}
+
+			}
+		}
 		return false;
 	}
 
 	public static boolean checkWin(char symb) {
 		boolean result;
-		// проверяются горизонтальные
+		// проверяются горизонтальные палки
 		for (int i = 0; i < SIZE; i++) {
 			for (int j = 0; j <= (SIZE - DOTS_TO_WIN); j++) {
 				result = true;
@@ -131,24 +184,20 @@ public class Lesson4 {
 	}
 
 	public static void aiTurn() {
-
-		xAI = -1;
+		xAI = -1; // инициализируем координаты для осмысленного хода ИИ
 		yAI = -1;
-		int x = -1, y = -1;
 
 		if (seek_Fpoint(DOT_X)) { // если есть достойный ход для ИИ, ходим
-			System.out.println("F-point is: " + xAI + ", " + yAI);
 			System.out.println("Компьютер походил в точку " + xAI + ", " + yAI);
 			map[yAI - 1][xAI - 1] = DOT_0;
 		} else { // иначе, ищем точку случайным образом
 			do {
-				x = rand.nextInt(SIZE);
-				y = rand.nextInt(SIZE);
-			} while (!isCellValid(x, y));
-			System.out.println("Компьютер походил в точку " + (x + 1) + " " + (y + 1));
-			map[y][x] = DOT_0;
+				xAI = rand.nextInt(SIZE);
+				yAI = rand.nextInt(SIZE);
+			} while (!isCellValid(xAI, yAI));
+			System.out.println("Компьютер походил в точку " + (xAI + 1) + " " + (yAI + 1));
+			map[yAI][xAI] = DOT_0;
 		}
-
 	}
 
 	public static boolean isCellValid(int x, int y) {
