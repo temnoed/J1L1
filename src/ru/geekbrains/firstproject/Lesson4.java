@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Lesson4 {
 
 	public static char[][] map;
-	public static final int SIZE = 20;
+	public static final int SIZE = 10;
 	public static final int DOTS_TO_WIN = 3;
 	public static final char DOT_EMPTY ='•';
 	public static final char DOT_X ='X';
@@ -42,6 +42,16 @@ public class Lesson4 {
 		}
 		System.out.println("Игра закончена");
 	}
+
+	public static boolean almostWin(char symb, int x, int y) { // метод проверяет будет ли выигрыш при ходе в данную точку противником следующим ходом
+		int length = DOTS_TO_WIN - 1;
+		for (int i = 1; i < length; i++) {
+
+
+		}
+		return false;
+	}
+
 
 	public static boolean checkWin(char symb) {
 		boolean result;
@@ -104,10 +114,24 @@ public class Lesson4 {
 
 	public static void aiTurn() {
 		int x = -1, y = -1;
-		do {
-			x = rand.nextInt(SIZE);
-			y = rand.nextInt(SIZE);
-		} while (!isCellValid(x, y));
+
+		for (int i = 0; i < SIZE; i++) {
+			for (int j = 0; j < SIZE; j++) {
+				if (almostWin(DOT_X, j, i)) {
+					x = j;
+					y = i;
+					break;
+				}
+			}
+			if (x >=0) break;
+		}
+
+		if (x < 0) {
+			do {
+				x = rand.nextInt(SIZE);
+				y = rand.nextInt(SIZE);
+			} while (!isCellValid(x, y));
+		}
 
 		System.out.println("Компьютер походил в точку " + (x + 1) + " " + (y + 1));
 		map[y][x] = DOT_0;
