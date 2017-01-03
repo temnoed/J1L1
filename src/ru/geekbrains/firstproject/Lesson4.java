@@ -6,24 +6,17 @@ import java.util.Scanner;
 public class Lesson4 {
 
 	public static char[][] map;
-	public static int[] fPoint;
-	public static final int SIZE = 5;
-	public static final int DOTS_TO_WIN = 3;
+	public static final int SIZE = 10;
+	public static final int DOTS_TO_WIN = 4;
 	public static final char DOT_EMPTY ='•';
 	public static final char DOT_X ='X';
 	public static final char DOT_0 ='0';
 	public static Random rand = new Random();
 	public static Scanner sc = new Scanner(System.in);
-//	public static int xAI = -1;
-//	public static int yAI = -1;
-
-
-
+	public static int xAI; // координаты для хода ИИ
+	public static int yAI;
 
 	public static void main(String[] args) {
-
-
-
 
 		initMap();
 		printMap();
@@ -52,12 +45,9 @@ public class Lesson4 {
 		System.out.println("Игра закончена");
 	}
 
-
-
-
-
 	public  static boolean seek_Fpoint( char symb ) { // если нашёл куда надо ходить ИИ - true
 		int sumDots = 0;
+
 		// проверяются горизонтальные палки
 		for (int i = 0; i < SIZE; i++) {
 			for (int j = 0; j <= (SIZE - DOTS_TO_WIN); j++) {
@@ -68,8 +58,9 @@ public class Lesson4 {
 				if (sumDots == DOTS_TO_WIN - 1) {
 					for (int k = 0; k < DOTS_TO_WIN; k++) { // второй проход
 						if ((map[i][j + k] == DOT_EMPTY) && isCellValid(j+k, i)) {
-							fPoint[0] = j+k+1;
-							fPoint[1] = i+1;
+							xAI = j+k+1;
+							yAI = i+1;
+							if (xAI >= 0 & yAI >= 0) return true;
 						}
 					}
 				}
@@ -77,11 +68,8 @@ public class Lesson4 {
 		}
 
 
-		if (fPoint[0] >= 0 & fPoint[1] >= 0) return true;
-		else return false;
+		return false;
 	}
-
-
 
 	public static boolean checkWin(char symb) {
 		boolean result;
@@ -142,25 +130,24 @@ public class Lesson4 {
 		map[y][x] = DOT_X;
 	}
 
-
 	public static void aiTurn() {
-		fPoint = new int[2];
-		fPoint[0] = -1; // типа Икс искомой точки
-		fPoint[1] = -1; // типа Игрек искомой точки
+
+		xAI = -1;
+		yAI = -1;
 		int x = -1, y = -1;
 
-		seek_Fpoint(DOT_X);
-		System.out.println("Fucking " + fPoint[0] + " , " + fPoint[1] );
-
+		if (seek_Fpoint(DOT_X)) { // если есть достойный ход для ИИ, ходим
+			System.out.println("F-point is: " + xAI + ", " + yAI);
+			System.out.println("Компьютер походил в точку " + xAI + ", " + yAI);
+			map[yAI - 1][xAI - 1] = DOT_0;
+		} else { // иначе, ищем точку случайным образом
 			do {
 				x = rand.nextInt(SIZE);
 				y = rand.nextInt(SIZE);
 			} while (!isCellValid(x, y));
-
-		System.out.println("Компьютер походил в точку " + (x + 1) + " " + (y + 1));
-		map[y][x] = DOT_0;
-
-
+			System.out.println("Компьютер походил в точку " + (x + 1) + " " + (y + 1));
+			map[y][x] = DOT_0;
+		}
 
 	}
 
