@@ -6,15 +6,24 @@ import java.util.Scanner;
 public class Lesson4 {
 
 	public static char[][] map;
-	public static final int SIZE = 10;
+	public static int[] fPoint;
+	public static final int SIZE = 5;
 	public static final int DOTS_TO_WIN = 3;
 	public static final char DOT_EMPTY ='•';
 	public static final char DOT_X ='X';
 	public static final char DOT_0 ='0';
 	public static Random rand = new Random();
 	public static Scanner sc = new Scanner(System.in);
+//	public static int xAI = -1;
+//	public static int yAI = -1;
+
+
+
 
 	public static void main(String[] args) {
+
+
+
 
 		initMap();
 		printMap();
@@ -43,14 +52,35 @@ public class Lesson4 {
 		System.out.println("Игра закончена");
 	}
 
-	public static boolean almostWin(char symb, int x, int y) { // метод проверяет будет ли выигрыш при ходе в данную точку противником следующим ходом
-		int length = DOTS_TO_WIN - 1;
-		for (int i = 1; i < length; i++) {
 
 
+
+
+	public  static boolean seek_Fpoint( char symb ) { // если нашёл куда надо ходить ИИ - true
+		int sumDots = 0;
+		// проверяются горизонтальные палки
+		for (int i = 0; i < SIZE; i++) {
+			for (int j = 0; j <= (SIZE - DOTS_TO_WIN); j++) {
+				sumDots = 0;
+				for (int k = 0; k < DOTS_TO_WIN; k++) { // сканируем в два прохода на длину палки в поисках незанятой выигрышной точки
+					if (map[i][j + k] == symb) sumDots++;
+				}
+				if (sumDots == DOTS_TO_WIN - 1) {
+					for (int k = 0; k < DOTS_TO_WIN; k++) { // второй проход
+						if ((map[i][j + k] == DOT_EMPTY) && isCellValid(j+k, i)) {
+							fPoint[0] = j+k+1;
+							fPoint[1] = i+1;
+						}
+					}
+				}
+			}
 		}
-		return false;
+
+
+		if (fPoint[0] >= 0 & fPoint[1] >= 0) return true;
+		else return false;
 	}
+
 
 
 	public static boolean checkWin(char symb) {
@@ -112,29 +142,26 @@ public class Lesson4 {
 		map[y][x] = DOT_X;
 	}
 
+
 	public static void aiTurn() {
+		fPoint = new int[2];
+		fPoint[0] = -1; // типа Икс искомой точки
+		fPoint[1] = -1; // типа Игрек искомой точки
 		int x = -1, y = -1;
 
-		for (int i = 0; i < SIZE; i++) {
-			for (int j = 0; j < SIZE; j++) {
-				if (almostWin(DOT_X, j, i)) {
-					x = j;
-					y = i;
-					break;
-				}
-			}
-			if (x >=0) break;
-		}
+		seek_Fpoint(DOT_X);
+		System.out.println("Fucking " + fPoint[0] + " , " + fPoint[1] );
 
-		if (x < 0) {
 			do {
 				x = rand.nextInt(SIZE);
 				y = rand.nextInt(SIZE);
 			} while (!isCellValid(x, y));
-		}
 
 		System.out.println("Компьютер походил в точку " + (x + 1) + " " + (y + 1));
 		map[y][x] = DOT_0;
+
+
+
 	}
 
 	public static boolean isCellValid(int x, int y) {
