@@ -1,6 +1,6 @@
 package ru.geekbrains.firstproject;
 
-public class MainClass {
+public class MainClassOld {
 
     // Создаём простой метод main
     public static void main (String[] args) {
